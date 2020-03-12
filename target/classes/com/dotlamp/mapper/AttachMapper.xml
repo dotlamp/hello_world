@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dotlamp.mapper.AttachMapper">
+  <insert id="m_insert">
+    insert into m_attach(uuid, uploadPath, filename, filetype, mno)
+    values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{mno})
+  </insert>
+
+  <delete id="m_delete">
+    delete from m_attach where uuid = #{uuid}
+  </delete>
+
+  <select id="m_findByNo" resultType="com.dotlamp.domain.AttachVO">
+    select * from m_attach where mno = #{mno}
+  </select>
+
+  <delete id="m_deleteAll">
+    delete m_attach where mno = #{mno}
+  </delete>
+
+  <select id="m_getOldFiles" resultType="com.dotlamp.domain.AttachVO">
+    select * from m_attach where uploadPath = to_char(sysdate -1, 'yyyy\MM\dd')
+  </select>
+
+
+  <insert id="b_insert">
+    insert into b_attach(uuid, uploadPath, filename, filetype, bno)
+    values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
+  </insert>
+
+  <delete id="b_delete">
+    delete from b_attach where uuid = #{uuid}
+  </delete>
+
+  <select id="b_findByNo" resultType="com.dotlamp.domain.AttachVO">
+    select * from b_attach where bno = #{bno}
+  </select>
+
+  <delete id="b_deleteAll">
+    delete b_attach where bno = #{bno}
+  </delete>
+
+  <select id="b_getOldFiles" resultType="com.dotlamp.domain.AttachVO">
+    select * from b_attach where uploadPath = to_char(sysdate -1, 'yyyy\MM\dd')
+  </select>
+</mapper>

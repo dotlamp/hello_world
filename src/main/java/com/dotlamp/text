@@ -1,0 +1,111 @@
+create table persistent_logins (username varchar(64) not null,
+                                series varchar(64) primary key,
+                                token varchar(64) not null,
+                                last_used timestamp not null);
+CREATE TABLE member(
+                       mno            INT             NOT NULL,
+                       id            VARCHAR2(30)    NOT NULL,
+                       password      VARCHAR2(100)    NOT NULL,
+                       name VARCHAR2(30)    NOT NULL,
+                       gender      varchar2(12)  NOT NULL,
+                       birth         varchar2(20)  NOT NULL,
+                       tel1           varchar2(4)  NOT NULL,
+                       tel2           varchar2(4)  NOT NULL,
+                       tel3           varchar2(4)  NOT NULL,
+                       email        varchar2(30)  NOT NULL,
+                       post         varchar2(10)  NOT NULL,
+                       adr1         varchar2(100)  NOT NULL,
+                       adr2         varchar2(100)  NOT NULL,
+                       adr3         varchar2(100) ,
+                       regDate       DATE           default sysdate,
+                       updateDate    DATE            default sysdate,
+                       enabled char(1) default '1',
+                       CONSTRAINT MEMBER_PK PRIMARY KEY (mno)
+);
+alter table member add (dno int);
+alter table member add constraint member_dno_fk foreign key (dno) references departments(dno) on delete cascade ;
+
+create SEQUENCE member_seq start with 1 INCREMENT by 1;
+
+CREATE TABLE member_auth(
+                            mno INT        NOT NULL,
+                            Auth        VARCHAR2(50)   NOT NULL,
+                            CONSTRAINT member_auth_memberNo_fk FOREIGN KEY(mno) REFERENCES member(mno) on delete cascade
+);
+
+create sequence board_seq;
+
+create table board(
+                      bno INT not null,
+                      title varchar2(200) not null,
+                      content varchar2(2000) not null,
+                      writer int not null,
+                      regdate date default sysdate,
+                      updatedate date default sysdate,
+                      constraint board_pk primary key(bno),
+                      constraint board_writer_fk foreign key (writer) references member(mno) on delete cascade
+);
+alter table board
+    add (replyCnt int DEFAULT 0);
+alter table board
+    add (viewCnt int DEFAULT 0);
+
+drop table reply;
+create table reply (
+                       rno int not null,
+                       bno int  not null,
+                       reply varchar2(1000) not null,
+                       replyer int not null,
+                       replyDate date default sysdate,
+                       updateDate date default sysdate,
+                       constraint reply_pk primary key (rno),
+                       constraint reply_board_fk foreign key (bno) references board(bno) on delete cascade,
+                       constraint reply_member_fk foreign key (replyer) references member(mno) on delete cascade
+);
+
+create sequence reply_seq;
+
+create table m_attach (
+                          uuid varchar2(100) not null,
+                          uploadPath varchar2(200) not null,
+                          fileName varchar2(100) not null,
+                          fileType char(1) default '1',
+                          mno INT        NOT NULL,
+                          constraint m_attach_pk primary key(uuid),
+                          constraint member_attach_fk FOREIGN key (mno) REFERENCES member(mno) on delete cascade
+);
+
+create table b_attach (
+                          uuid varchar2(100) not null,
+                          uploadPath varchar2(200) not null,
+                          fileName varchar2(100) not null,
+                          fileType char(1) default '1',
+                          bno INT        NOT NULL,
+                          constraint b_attach_pk primary key(uuid),
+                          constraint board_attach_fk FOREIGN key (bno) REFERENCES board(bno) on delete cascade
+);
+
+create table departments
+(
+    dno                 int           not null,
+    name                varchar2(30)  not null,
+    tel1                varchar2(4)   NOT NULL,
+    tel2                varchar2(4)   NOT NULL,
+    tel3                varchar2(4)   NOT NULL,
+    post                varchar2(10)  NOT NULL,
+    adr1                varchar2(100) NOT NULL,
+    adr2                varchar2(100) NOT NULL,
+    adr3                varchar2(100),
+    begin_businessHours date,
+    end_businessHours   date,
+        constraint department_pk primary key (dno)
+);
+
+create table employee (
+    dno int not null,
+    mno int not null,
+    tel  varchar2(8),
+    hire_date date default sysdate,
+    constraint employee_dno_fk foreign key (dno) references departments(dno) on delete cascade ,
+    constraint employee_mno_fk foreign key (mno) references member(mno) on delete cascade
+);

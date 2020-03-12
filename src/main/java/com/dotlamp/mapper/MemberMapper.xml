@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dotlamp.mapper.MemberMapper">
+
+  <resultMap type="com.dotlamp.domain.MemberVO" id="memberMap">
+    <id property="mno" column="mno"/>
+    <result property="mno" column="mno"/>
+    <result property="id" column="id"/>
+    <result property="password" column="password"/>
+    <result property="name" column="name"/>
+    <result property="regDate" column="regdate"/>
+    <result property="updateDate" column="updatedate"/>
+    <result property="gender" column="gender"/>
+    <result property="birth" column="birth"/>
+    <result property="email" column="email"/>
+    <result property="tel1" column="tel1"/>
+    <result property="tel2" column="tel2"/>
+    <result property="tel3" column="tel3"/>
+    <result property="post" column="post"/>
+    <result property="adr1" column="adr1"/>
+    <result property="adr2" column="adr2"/>
+    <result property="adr3" column="adr3"/>
+    <collection property="authList" resultMap="authMap"></collection>
+    <collection property="attachList" resultMap="attachMap"></collection>
+  </resultMap>
+  <resultMap type="com.dotlamp.domain.MemberAuthVO" id="authMap">
+    <result property="mno" column="mno"/>
+    <result property="auth" column="auth"/>
+  </resultMap>
+    <resultMap type="com.dotlamp.domain.AttachVO" id="attachMap">
+        <result property="mno" column="mno"/>
+        <result property="uuid" column="uuid"/>
+        <result property="fileName" column="fileName"/>
+        <result property="uploadPath" column="uploadPath"/>
+    </resultMap>
+
+  <select id="read" resultMap="memberMap">
+ select m.mno,id, password, name, gender, birth,
+tel1, tel2, tel3, email, post, adr1, adr2, adr3,
+regdate, updatedate, enabled,
+auth.auth, attach.uuid, attach.filename, attach.uploadpath, attach.filetype
+from member m
+left outer join member_auth auth
+on m.mno = auth.mno
+left outer join m_attach attach
+on m.mno = attach.mno
+where id = #{id}
+  </select>
+
+    <select id="get" resultMap="memberMap">
+select m.mno, id, password, name, gender, birth,
+tel1, tel2, tel3, email, post, adr1, adr2, adr3,
+regdate, updatedate, enabled,
+auth.auth
+from member m
+left outer join member_auth auth
+on m.mno = auth.mno
+where m.mno = #{mno}
+  </select>
+
+  <sql id="criteria">
+    <trim prefix="(" suffix=") AND " prefixOverrides="OR">
+      <foreach item='type' collection="typeArr">
+        <trim prefix="OR">
+          <choose>
+            <when test="type == 'N'.toString()">
+              name like '%'||#{keyword}||'%'
+            </when>
+            <when test="type == 'G'.toString()">
+              gender like '%'||#{keyword}||'%'
+            </when>
+            <when test="type == 'B'.toString()">
+              NVL(TRUNC(MONTHS_BETWEEN(SYSDATE, TO_DATE(SUBSTR(birth, 1, 4), 'YYYY'))/12), 0) >= #{keyword}
+            </when>
+            <when test="type == 'T'.toString()">
+              tel1 like '%'||#{keyword}||'%' or tel2 like '%'||#{keyword}||'%' or tel3 like '%'||#{keyword}||'%'
+              or
+              tel1||tel2||tel3 like tel2 '%'||#{keyword}||'%'
+              or
+              tel1||'-'||tel2||'-'||tel3 like tel2 '%'||#{keyword}||'%'
+            </when>
+            <when test="type == 'E'.toString()">
+              email like '%'||#{keyword}||'%'
+            </when>
+            <when test="type == 'A'.toString()">
+              adr1 like '%'||#{keyword}||'%'
+            </when>
+            <when test="type == 'R'.toString()">
+              auth like '%'||#{keyword}||'%'
+            </when>
+          </choose>
+        </trim>
+      </foreach>
+    </trim>
+  </sql>
+<!--/*+ INDEX_DESC(tbl_member pk_member*/-->
+
+  <select id="getList" resultMap="memberMap">
+  <![CDATA[
+select
+*
+  from (
+  select /*+INDEX_DESC B*/
+  rownum rn, A.mno, A.id, A.password, A.name, A.gender, A.birth, A.tel1, A.tel2, A.tel3, A.email, A.post, A.adr1, A.adr2, A.adr3, A.regdate, A.updatedate, A.enabled, A.auth
+    from (
+    select m.mno, id, password, name, gender, birth, tel1, tel2, tel3, email, post, adr1, adr2, adr3, regdate, updatedate, enabled, auth.auth
+    from member m
+    left outer join member_auth auth
+    on m.mno = auth.mno
+    order by regdate desc) A
+    where
+   ]]>
+   <include refid="criteria"></include>
+    <![CDATA[
+  rownum <= #{pageNum} * #{amount}  ) B
+  where rn > (#{pageNum}-1) * #{amount}
+  ]]>
+  </select>
+
+  <insert id="insert">
+      <selectKey keyProperty="mno" order="BEFORE" resultType="int">
+          select member_seq.nextval from dual
+      </selectKey>
+    insert into member(mno, id, password, name, gender, birth, email, tel1, tel2, tel3, post, adr1, adr2, adr3)
+    values (#{mno} ,#{id}, #{password}, #{name}, #{gender}, #{birth}, #{email}, #{tel1}, #{tel2}, #{tel3}, #{post}, #{adr1}, #{adr2}, #{adr3})
+  </insert>
+
+  <insert id="insertAuth" parameterType="map">
+    insert into member_auth(mno, auth)
+    values (#{mno}, #{auth})
+  </insert>
+
+  <delete id="deleteAuth" parameterType="map">
+    delete from member_auth where mno = #{mno} and auth = #{auth}
+  </delete>
+
+    <insert id="modify">
+        update member
+        set name=#{name}, birth=#{birth}, email = #{email}, tel1 = #{tel1}, tel2 = #{tel2}, tel3 = #{tel3},
+        post = #{post}, adr1 = #{adr1}, adr2 = #{adr2}, adr3 = #{adr3}
+        where mno = #{mno}
+    </insert>
+
+  <delete id="delete">
+    delete from member where id = #{id}
+  </delete>
+
+  <delete id="deleteAllAuth">
+    delete from member_auth where mno = #{mno}
+  </delete>
+
+
+  <update id="passwordChange">
+    update member set password = #{password}, updatedate=sysdate  where mno = #{mno}
+  </update>
+
+  <select id="getTotalCount" resultType="int">
+    select count(*) from member
+    where
+    <include refid="criteria"></include>
+    mno > 0
+  </select>
+
+  <select id="idCheck" resultType="int">
+    select count(*) from member where id = #{id}
+  </select>
+
+    <insert id="insertIpAdr">
+        insert into member_login(mno, ipadr, visitDate)
+        values (#{mno}, #{ipadr}, sysdate)
+    </insert>
+
+  <select id="passwordCheck" resultType="int">
+    select * from member
+    where id = #{id}
+    and password = #{password}
+  </select>
+
+</mapper>
