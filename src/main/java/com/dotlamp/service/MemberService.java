@@ -24,6 +24,7 @@ public interface MemberService {
     int getTotalCount(Criteria cri);
     /* 회원 비밀번호 변경 */
     boolean passwordChange(MemberVO member);
+
     /* 회원 첨부파일 */
     List<AttachVO> getAttachList(int mno);
     /* 회원 아이디 중복 확인 */

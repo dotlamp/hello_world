@@ -108,7 +108,6 @@
                                 crossorigin="anonymous">
                                 </script>
 
-<%--                                <button type="submit" class="btn btn-primary btn-user btn-block" value="RegisterAccout">--%>
                                 <button type="submit" class="btn btn-warning btn-user btn-block">Modify Profile</button>
 
 
@@ -122,13 +121,6 @@
                                 <input type="hidden" name="mno" value="<c:out value="${member.mno}"/> ">
                                 <input type='hidden' name="${_csrf.parameterName}" value="${_csrf.token }" />
                             </form>
-                            <hr>
-                            <div class="text-center">
-                                <a class="small" href="#">Forgot Password?</a>
-                            </div>
-                            <div class="text-center">
-                                <a class="small" href="/login">Already have an account? Login!</a>
-                            </div>
                         </div>
                     </div>
                 </div>

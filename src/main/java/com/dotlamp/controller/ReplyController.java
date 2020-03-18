@@ -47,7 +47,7 @@ public class ReplyController {
         return "redirect:/board/get";
     }
 
-    @PreAuthorize("principal.member.id == #replyer")
+    /*@PreAuthorize("principal.member.mno == #replyer")*/
     @PostMapping("/remove")
     public String remove(@RequestParam("rno") int rno,
                          @RequestParam("bno") int bno,
@@ -65,7 +65,7 @@ public class ReplyController {
         return "redirect:/board/get";
     }
 
-    @PreAuthorize("principal.member.id == #replyer")
+/*    @PreAuthorize("principal.member.mno == #replyer")*/
     @PostMapping("modify")
     public String modify(ReplyVO vo,
                          @RequestParam("bno") int bno,

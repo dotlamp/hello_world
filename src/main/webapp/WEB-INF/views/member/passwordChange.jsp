@@ -38,8 +38,7 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-2">비밀번호 입력</h1>
-                                        <p class="mb-4">비밀번호 확인 후 변경이 가능합니다.</p>
+                                        <h1 class="h4 text-gray-900 mb-2">비밀번호 변경</h1>
                                     </div>
                                     <form action="/member/passwordChange" method='post'>
                                         <div class="form-group">

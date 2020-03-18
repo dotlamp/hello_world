@@ -65,7 +65,7 @@
                                         </a>
                                     </td>
                                     <c:forEach items="${board.memberList}" var="member">
-                                        <td><c:out value="${member['name']}" /> </td>
+                                        <td><c:out value="${member['name']}" />(<c:out value="${member['id']}"/>) </td>
                                     </c:forEach>
                                     <td><c:out value="${board.viewCnt}"/></td>
                                     <td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regDate }" /></td>

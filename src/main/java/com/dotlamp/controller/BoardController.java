@@ -64,7 +64,7 @@ public class BoardController {
         }
         service.register(board);
         rttr.addFlashAttribute("result", board.getBno());
-        return "redirect:/board/list";
+        return "redirect:/board/get?bno="+board.getBno();
     }
 
     @GetMapping({"/get", "/modify"})
@@ -80,7 +80,7 @@ public class BoardController {
     }
 
     @PostMapping("/modify")
-    @PreAuthorize("principal.member.mno == #board.writer")
+    @PreAuthorize("isAuthenticated() and ((principal.member.mno == #board.writer) or hasRole('ROLE_ADMIN'))")
     public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
         log.info("modify"+board);
         if(service.modify(board)) {
@@ -90,13 +90,11 @@ public class BoardController {
         rttr.addAttribute("amount", cri.getAmount());
         rttr.addAttribute("type", cri.getType());
         rttr.addAttribute("keyword", cri.getKeyword());
-
-        return "redirect:/board/list";
+        return "redirect:/board/get?amount="+cri.getAmount()+"&type="+cri.getType()+"&pageNum="+cri.getPageNum()+"&keyword="+cri.getKeyword()+"&bno="+board.getBno();
     }
 
-
+    /* Authorize - bno로 받으니 로그인정보와 비교가 불가능.*/
     @PostMapping("/remove")
-    @PreAuthorize("principal.member.mno == #writer")
     public String remove(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
         log.info("remove"+bno);
 

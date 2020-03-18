@@ -112,7 +112,7 @@ public class MemberServiceImpl implements MemberService {
 
         attachMapper.m_deleteAll(member.getMno());
         boolean modifyResult = mapper.modify(member) == 1;
-        if(modifyResult && member.getAttachList() != null || member.getAttachList().size() <= 0){
+        if(modifyResult && member.getAttachList() != null){
             member.getAttachList().forEach(attach -> {
                 attach.setMno(member.getMno());
                 attachMapper.m_insert(attach);
@@ -133,10 +133,8 @@ public class MemberServiceImpl implements MemberService {
         log.warn(member.hasAuth(auth));
         if(!member.hasAuth(auth)){
             mapper.insertAuth(member.getMno(), "ROLE_"+auth.toUpperCase());
-            log.warn("Bok");
         }else{
             mapper.deleteAuth(member.getMno(), "ROLE_"+auth.toUpperCase());
-            log.warn("Dok");
         }
         return mapper.read(member.getId());
     }

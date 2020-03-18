@@ -64,14 +64,20 @@
                                 </script>
                                 <hr>
                             <sec:authorize access="isAuthenticated()">
+                                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <button data-oper="modify" class="btn btn-warning btn-user btn-block">Modify</button>
+                                    <button data-oper="remove" class="btn btn-danger btn-user btn-block">Remove</button>
+                                </sec:authorize>
                                 <c:forEach items="${board.memberList}" var="member">
                                     <sec:authentication property="principal" var="pinfo"/>
                                     <c:set value="${pinfo.username}" var="username" />
                                     <c:set value="${member.id}" var="id" />
-                                    <c:if test="${username eq id}">
-                                        <button data-oper="modify" class="btn btn-warning btn-user btn-block">Modify</button>
-                                        <button data-oper="remove" class="btn btn-danger btn-user btn-block">Remove</button>
-                                    </c:if>
+                                    <sec:authorize access="hasRole('ROLE_USER')">
+                                        <c:if test="${username eq id}">
+                                            <button data-oper="modify" class="btn btn-warning btn-user btn-block">Modify</button>
+                                            <button data-oper="remove" class="btn btn-danger btn-user btn-block">Remove</button>
+                                        </c:if>
+                                    </sec:authorize>
                                 </c:forEach>
                             </sec:authorize>
                                 <input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno }"/>'>
@@ -294,203 +300,6 @@
 
         });
     </script>
-        <%--register check--%>
-        <script>
-            $("#id").blur(function(){
-                checkId();
-            });
-            $("#pw1").blur(function() {
-                checkPw1();
-            });
-            $("#pw2").blur(function() {
-                checkPw2();
-            });
-            $("#pw2").blur(function() {
-                checkPw2();
-            });
-            $("#name").blur(function() {
-                checkName();
-            });
-
-            $("#email").blur(function() {
-                checkEmail();
-            });
-            $("#tel3").blur(function() {
-                checkTel();
-            });
-            $("#birth").blur(function () {
-                checkBirth();
-            });
-            $("#adr").blur(function() {
-                checkPost();
-            });
-            $("#sample6_detailAddress").blur(function () {
-                checkPost();
-            });
-
-            function checkId() {
-                var id = $("#id").val();
-                var idC = /^[a-z0-9][a-z0-9_\-]{2,19}$/;
-
-                if (id == "") {
-                    $("#idchk").html("필수 정보입니다.");
-                    return false;
-                }
-                if (!idC.test(id)) {
-                    $("#idchk").html("3자 이상, 20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용가능합니다.");
-                    return false;
-                }else{
-                    $.ajax({
-                        type : "get",
-                        url : "./idChk?id="+id,
-                        dataType:'json',
-                        success : function(data) {
-                            if (data == 1){
-                                $("#idchk").html("이미 사용중이거나 탈퇴한 아이디입니다.");
-                                return false;
-                            }else {
-                                $("#idchk").html("");
-                                return true;
-                            }
-                        },
-                        error:function (error) {
-                            console.log("error"+error);
-                        }
-                    });
-                }
-            } //checkId
-
-            function checkPw1() {
-                var pw1 = $("#pw1").val();
-                if (pw1 == "") {
-                    $("#pwchk").html("패스워드 입력해주세요.");
-                    return false;
-                }
-                if (pw1.length < 3 || pw1.length > 16) {
-                    $("#pwchk").html("3자 이상 16자 이하 입력 부탁드립니다.");
-                    return false;
-                }else if (pw1 != ""){
-                    $("#pwchk").html("");
-                    return true;
-                }
-            } //checkPw1
-
-            function checkPw2() {
-                var pw1 = $("#pw1").val();
-                var pw2 = $("#pw2").val();
-
-                if (pw2 == "") {
-                    $("#pwchk").html("비밀번호 한번더 입력해주세요.");
-                    return false;
-                }
-                if (pw1 != pw2) {
-                    $("#pwchk").html("비밀번호가 일치하지 않습니다.");
-                    return false;
-                }
-                if(pw1 == pw2){
-                    $("#pwchk").html("");
-                    return true;
-                }
-
-            }//checkPw2
-
-            function checkName() {
-                var name = $("#name").val();
-                var nameC = /^[가-힣]{2,4}$/;
-
-                if(name == ''){
-                    $("#namechk").html("필수정보입니다.");
-                    return false;
-                }
-                if (!nameC.test(name)) {
-                    $("#namechk").html("2~4자 한글만 입력가능합니다.");
-                    return false;
-                }else {
-                    $("#namechk").html("");
-                    return true;
-                }
-            }//checkName
-
-            function checkEmail() {
-                var email = $("#email").val();
-                var emailC = /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-
-                if(email == ""){
-                    $("#emailchk").html("메일을 입력해주세요");
-                    return false;
-                }
-                if(!emailC.test(email)){
-                    $("#emailchk").html("메일을 정확히 입력해주세요");
-                    return false;
-                }else {
-                    $("#emailchk").html("");
-                    return true;
-                }
-
-            }//checkEmail
-
-            function checkTel() {
-                var tel1 = $("#tel1").val();
-                var tel2 = $("#tel2").val();
-                var tel3 = $("#tel3").val();
-
-                var tel = tel1+"-"+tel2+"-"+tel3;
-
-                var telC =/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
-
-                if(tel1 == "" || tel2 == "" || tel3 ==""){
-                    $("#telchk").html("입력해주세요.");
-                    return false;
-                }
-                if(!telC.test(tel)){
-                    $("#telchk").html("전화번호가 올바르지 않습니다.");
-                    return false;
-                }else {
-                    $("#telchk").html("");
-                    return true;
-                }
-
-            }//checkTel
-
-            function checkBirth() {
-                var birth = $("#birth").val();
-                var now = new Date();
-                var yearNow = now.getFullYear();
-
-                if(birth == ""){
-                    $("#birthchk").html("생년월일을 입력해주세요");
-                    return false;
-                }
-                if(yearNow-(birth.substr(0,4)) < 14){
-                    $("#birthchk").html("14세 미만은 회원가입 불가능 합니다.");
-                    return false;
-                }else{
-                    $("#birthchk").html("");
-                    return true;
-                }
-
-            }//checkBirth
-
-
-            function checkPost() {
-                var sample6_postcode = $("#sample6_postcode").val();
-                var sample6_detailAddress = $("#sample6_detailAddress").val();
-
-                if(sample6_postcode ==  ""){
-                    $("#adrchk").html("주소를 입력해주세요");
-                    return false;
-                }
-                if(sample6_detailAddress == ""){
-                    $("#adrchk").html("상세주로를 입력해주세요");
-                    return false;
-                }
-                if(sample6_postcode != ""&& sample6_detailAddress != "" ){
-                    $("#adrchk").html("");
-                    return true;
-                }
-            }//checkPost
-
-        </script>
         <%-- calendar --%>
         <script src="/resources/vendor/datetimepicker/jquery.js"></script>
         <script src="/resources/vendor/datetimepicker/jquery.datetimepicker.js"></script>

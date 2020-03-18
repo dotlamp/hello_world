@@ -130,40 +130,6 @@
 
 <%--register check--%>
 <script>
-
-
-/*
-
-    $("#pw1").blur(function() {
-        checkPw1();
-    });
-    $("#pw2").blur(function() {
-        checkPw2();
-    });
-    $("#pw2").blur(function() {
-        checkPw2();
-    });
-    $("#name").blur(function() {
-        checkName();
-    });
-
-    $("#email").blur(function() {
-        checkEmail();
-    });
-    $("#tel3").blur(function() {
-        checkTel();
-    });
-    $("#birth").blur(function () {
-        checkBirth();
-    });
-    $("#adr").blur(function() {
-        checkPost();
-    });
-    $("#sample6_detailAddress").blur(function () {
-        checkPost();
-    });
-*/
-
     //모든 공백 체크 정규식
     var empJ = /\s/g;
     //아이디 정규식
@@ -171,7 +137,7 @@
     // 비밀번호 정규식
     var pwJ = /^[A-Za-z0-9]{0,12}$/;
     // 이름 정규식
-    var nameJ = /^[가-힣]{2,4}|[a-zA-Z]{2,10}\s[a-zA-Z]{2,10}$/;
+    var nameJ = /^[가-힣]{2,5}|[a-zA-Z]{2,10}\s[a-zA-Z]{2,10}$/;
     // 이메일 검사 정규식
     var emailJ = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
@@ -332,7 +298,7 @@
                 console.log(nameJ.test($(this).val()));
                 $("#namechk").text('');
             } else {
-                $('#namechk').text('한글 2~4자 이내로 입력하세요. (특수기호, 공백 사용 불가)');
+                $('#namechk').text('한글 2~10자 이내로 입력하세요. (특수기호, 공백 사용 불가)');
                 $('#namechk').css('color', 'red');
             }
         });

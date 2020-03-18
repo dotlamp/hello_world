@@ -41,8 +41,8 @@ public class MemberControllerTests {
     @Test
     public void testRegister() throws  Exception{
         String resultPage = movcMvc.perform(MockMvcRequestBuilders.post("/member/register")
-            .param("userid", "test02")
-            .param("userpw", "pw02")
+            .param("userid", "admin")
+            .param("userpw", "admin")
             .param("username", "tester02")
             ).andReturn().getModelAndView().getViewName();
     }

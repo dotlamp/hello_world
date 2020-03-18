@@ -60,9 +60,9 @@
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">A부서 / 000 - 0000 - 0000</h6>
-                    <a class="collapse-item" href="/depratment/hello">소개</a>
-                    <a class="collapse-item" href="/depratment/list">게시판</a>
-                    <a class="collapse-item" href="/depratment/worker">부서원</a>
+                    <a class="collapse-item" href="/department/hello">소개</a>
+                    <a class="collapse-item" href="/department/list">게시판</a>
+                    <a class="collapse-item" href="/department/worker">부서원</a>
                 </div>
             </div>
         </li>
@@ -76,9 +76,9 @@
             <div id="collapseUtilities" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">B부서 / 000 - 0000 - 0000</h6>
-                    <a class="collapse-item" href="/depratment/hello">소개</a>
-                    <a class="collapse-item" href="/depratment/list">게시판</a>
-                    <a class="collapse-item" href="/depratment/worker">부서원</a>
+                    <a class="collapse-item" href="/department/hello">소개</a>
+                    <a class="collapse-item" href="/department/list">게시판</a>
+                    <a class="collapse-item" href="/department/worker">부서원</a>
                 </div>
             </div>
         </li>
@@ -121,8 +121,8 @@
 
 
         <!-- Nav Item - Tables -->
+        <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
         <hr class="sidebar-divider">
-            <sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
             <%--<sec:authorize access="hasRole('ROLE_ADMIN')">--%>
             <%--<sec:authorize access="!hasRole('ROLE_ADMIN')">--%>
                 <li class="nav-item">
@@ -133,11 +133,11 @@
                     <div id="collapseAAA" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="/member/list">회원관리</a>
-                            <a class="collapse-item" href="/depratment/list">부서관리</a>
+                            <a class="collapse-item" href="/department/list">부서관리</a>
                         </div>
                     </div>
                 </li>
-            </sec:authorize>
+        </sec:authorize>
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
 

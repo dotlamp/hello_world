@@ -14,7 +14,7 @@
 
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
-                Board
+                Department
             </h6>
         </div>
         <%--/.ard-header py-3--%>
@@ -55,20 +55,20 @@
                             <c:set value="${((pageNum-1)*amount)+1}" var="startNo" />
                             <c:set value="${pageNum*amount}" var="endNo" />
 
-                            <c:forEach items="${list}" var="board" >
+                            <c:forEach items="${list}" var="department" >
                                 <tr>
-                                    <td><c:out value="${board.bno}" /></td>
+                                    <td><c:out value="${department.bno}" /></td>
                                     <td>
-                                        <a class='getmove' href="<c:out value="${board.bno}" />">
-                                            <strong><c:out value="${board.title}" /></strong>
-                                            <small>(<c:out value="${board.replyCnt}"/>)</small>
+                                        <a class='getmove' href="<c:out value="${department.bno}" />">
+                                            <strong><c:out value="${department.title}" /></strong>
+                                            <small>(<c:out value="${department.replyCnt}"/>)</small>
                                         </a>
                                     </td>
-                                    <c:forEach items="${board.memberList}" var="member">
+                                    <c:forEach items="${department.memberList}" var="member">
                                         <td><c:out value="${member['name']}" /> </td>
                                     </c:forEach>
-                                    <td><c:out value="${board.viewCnt}"/></td>
-                                    <td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regDate }" /></td>
+                                    <td><c:out value="${department.viewCnt}"/></td>
+                                    <td><fmt:formatDate pattern="yyyy-MM-dd" value="${department.regDate }" /></td>
                                 </tr>
                             </c:forEach>
 --%>
@@ -81,7 +81,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-5">
                         <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
-                            <form id='searchForm' action="/board/list" method="get">
+                            <form id='searchForm' action="/department/list" method="get">
                             <lable>Total : <c:out value="${pageMaker.total}"/></lable>
                             <label>| Search : </label>
                             <select name='type' style="color: #6e707e; border: 1px solid #d1d3e2; border-radius:35rem; padding: .1rem .75rem;">
@@ -141,7 +141,7 @@
 <!-- /.container-fluid -->
 
 
-<form id='actionForm' action="/board/list" method="get">
+<form id='actionForm' action="/department/list" method="get">
     <input type='hidden' name='amount' class='amount_input' value='${pageMaker.cri.amount }' >
     <input type='hidden' name='type' value='<c:out value="${pageMaker.cri.type }"/>'>
     <input type='hidden' name='keyword' value='<c:out value="${pageMaker.cri.keyword }"/>'>
@@ -151,11 +151,11 @@
 <%@include file="../includes/footer.jsp" %>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<%--
+
 <script>
     $(document).ready(function() {
         $("#regBtn").on("click", function(){
-            self.location = "/board/register";
+            self.location = "/department/register";
         });
 
         var actionForm = $("#actionForm");
@@ -184,7 +184,7 @@
         $('.getmove').click(function (e) {
             e.preventDefault();
             actionForm.append("<input type='hidden' name='bno' value='"+ $(this).attr("href") +"'>");
-            actionForm.attr("action", "/board/get");
+            actionForm.attr("action", "/department/get");
             actionForm.submit();
         });
 
@@ -203,4 +203,4 @@
             searchForm.submit();
         });
     });
-</script>--%>
+</script>

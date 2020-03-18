@@ -24,11 +24,7 @@ public class BoardMapperTests {
 //	@Setter(onMethod_ = @Autowired)
 	private BoardMapper mapper;
 	
-	@Test
-	public void testGetList() {
-		mapper.getList().forEach(board->log.info(board));
-	}
-	
+
 	@Test /* bno value seq_board.nextval */
 	public void testInsert() {
 		for(int i=1; i<10; i++) {

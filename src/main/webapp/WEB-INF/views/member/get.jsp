@@ -108,7 +108,7 @@
 
                                 <button data-oper="modify" class="btn btn-warning btn-user btn-block">Modify</button>
                                 <button data-oper="home" class="btn btn-secondary btn-user btn-block">Home</button>
-                            <sec:authorize access="hasRole('ROLE_USER')">
+                            <sec:authorize access="hasRole('ROLE_ADMIN')">
                             <button data-oper="list" class="btn btn-primary btn-user btn-block">List</button>
                             </sec:authorize>
                             <form id='operForm' action="/member/modify" method="get">
@@ -286,6 +286,7 @@
                             var fileCallPath =  encodeURIComponent( attach.uploadPath+ "/s_"+attach.uuid +"_"+attach.fileName);
 
                             str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"' ><div>";
+                            str += "<span> "+ attach.fileName+"</span><br/>";
                             str += "<img src='/upload/display?fileName="+fileCallPath+"'>";
                             str += "</div></li>";
                         }else{
@@ -295,6 +296,7 @@
                             str += "</div></li>";
                         }
                     });
+
                     $(".uploadResult ul").html(str);
                 }); //getJSON
             })(); //function

@@ -46,7 +46,7 @@
 							title like '%'||#{keyword}||'%' 
 						</when>
 						<when test="type == 'C'.toString()">
-							content like '%'||#{keyword}||'%' 
+							content like '%'||#{keyword}||'%'
 						</when>
 						<when test="type == 'W'.toString()">
 							writer like '%'||#{keyword}||'%' 
@@ -62,14 +62,14 @@
 select *
 from (
     select /*+INDEX_DESC B*/
-    rownum rn, A.bno, A.title, A.regdate, A.updatedate, A.writer, A.replyCnt, A.viewCnt, A.id, A.name
+    rownum rn, A.bno, A.title, A.content, A.regdate, A.updatedate, A.writer, A.replyCnt, A.viewCnt, A.id, A.name
     from (
         select
-        bno, title, bd.regdate, bd.updatedate, bd.writer, bd.replyCnt, bd.viewCnt, m.id, m.name
+        bno, title, content, bd.regdate, bd.updatedate, bd.writer, bd.replyCnt, bd.viewCnt, m.id, m.name
     from board bd
     left join member m
     on bd.writer = m.mno
-    order by bd.regdate desc) A
+    order by bd.bno desc) A
     where
 			]]>
 			<include refid="criteria"></include>

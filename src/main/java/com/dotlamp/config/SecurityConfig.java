@@ -7,10 +7,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -51,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomAccessDeniedHandler();
     }
 
-    /* 로그인 사용자 */
+        /* 로그인 사용자 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("Security_config: configure");
@@ -65,12 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sample/all").permitAll()
                 .antMatchers("/sample/member").access("hasRole('ROLE_MANAGER')")
                 .antMatchers("/sample/admin").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/member/list").access("principal.username == 'admin' or hasRole('ROLE_ADMIN')");
-                /*.antMatchers("/member/list").access("hasRole('ROLE_ADMIN')" );*/
+                .antMatchers("/member/list").access("isAuthenticated() and ((principal.username == 'admin') or hasRole('ROLE_ADMIN'))");
 
         /* 로그인 페이지 설정 */
 		http.formLogin().loginPage("/login").loginProcessingUrl("/login").successHandler(loginSuccessHandler());
-        //.successHandler(loginSuccessHandler())
+
         /* 로그아웃 처리 */
         http.logout().logoutSuccessUrl("/").logoutUrl("/logout").invalidateHttpSession(true).deleteCookies("remember-me", "JSESSION_ID");
 
@@ -90,6 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
     /* 자동 로그인 처리 */
     @Bean

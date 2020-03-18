@@ -4,9 +4,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-
 <%@include file="../includes/header.jsp" %>
-
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -38,7 +36,7 @@
                             <thead>
                                 <tr>
                                     <th>번호</th>
-                                    <th>지점</th>
+                                    <%--<th>지점</th>--%>
                                     <th>아이디</th>
                                     <th>이름</th>
                                     <th>성별</th>
@@ -47,19 +45,19 @@
                                     <th>email</th>
                                     <th>주소</th>
                                     <th>가입일</th>
-                                    <%--<th>권한</th>--%>
+                                    <th>권한</th>
                                     <th>권한</th>
                                 </tr>
                             </thead>
                            <tbody>
-                           <c:set value="${pageMaker.cri.pageNum }" var="pageNum"/>
+<%--                           <c:set value="${pageMaker.cri.pageNum }" var="pageNum"/>
                            <c:set value="${pageMaker.cri.amount }" var="amount"/>
-                           <c:set value="${((pageNum-1)*amount)+1}" var="tableNum" />
+                           <c:set value="${((pageNum-1)*amount)+1}" var="tableNum" />--%>
                                <c:forEach items="${list}" var="member">
                                 <tr>
-                                    <td><c:out value="${status.index}"/></td>
-                                    <td>지점명</td>
-                                    <td><a class='getmove' href="<c:out value="${member.mno}" />"><c:out value="${member.id}" />(<c:out value="${member.mno}"/>)</a></td>
+                                    <td><c:out value="${member.mno}"/></td>
+                                    <%--<td>지점명</td>--%>
+                                    <td><a class='getmove' href="<c:out value="${member.mno}" />"><c:out value="${member.id}" /></a></td>
                                     <td><a class='getmove' href="<c:out value="${member.mno}" />"><c:out value="${member.name}" /></a></td>
                                     <td><c:out value="${member.gender}"/></td>
                                     <%--나이계산--%>
@@ -74,11 +72,11 @@
                                     <td><c:out value="${member.email}"/></td>
                                     <td><c:out value="${member.adr1}"/><c:out value="${member.adr3}"/></td>
                                     <td><fmt:formatDate pattern="yyyy-MM-dd" value="${member.regDate }" /></td>
-                                    <%--<td>
+                                    <td>
                                         <c:forEach items="${member.authList}" var="auth" varStatus="status">
                                         ${auth['auth']}
                                     </c:forEach>
-                                    </td>--%>
+                                    </td>
                                     <td>
                                         <c:url var="changeRoleUrl" value="/member/auth/${member.mno}"/>
                                         <a href="${changeRoleUrl}/admin" class="btn <c:if test="${ member.hasAuth('ADMIN')}" >btn-success </c:if>" >관리자</a>
@@ -129,7 +127,7 @@
                         <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
                             <ul class="pagination">
                                 <c:if test="${pageMaker.prev}">
-                                    <li class="paginate_button page-item previous disabled" id="dataTable_previous">
+                                    <li class="paginate_button page-item previous" id="dataTable_previous">
                                         <a href="${pageMaker.startPage-1}"class="page-link">Previous</a>
                                     </li>
                                 </c:if>

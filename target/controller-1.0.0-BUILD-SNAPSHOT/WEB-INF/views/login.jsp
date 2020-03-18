@@ -73,7 +73,7 @@
                                 </form>
                                 <hr>
                                 <div class="text-center">
-                                    <a class="small" href="#">Forgot Password?</a>
+                                    <a class="small" href="/member/forgetPassword">Forgot Password?</a>
                                 </div>
                                 <div class="text-center">
                                     <a class="small" href="/member/register">Create an Account!</a>

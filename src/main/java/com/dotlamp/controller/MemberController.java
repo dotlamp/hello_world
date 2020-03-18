@@ -6,17 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.internet.MimeMessage;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +32,9 @@ public class MemberController {
 
     @Setter(onMethod_ = @Autowired)
     private MemberService service;
+
+    @Setter(onMethod_ = @Autowired)
+    private JavaMailSender mailSender;
 
     @GetMapping("/list")
     public void list(Criteria cri, Model model){
@@ -45,23 +50,23 @@ public class MemberController {
     @PostMapping("/register")
     public String postRegister(MemberVO member, RedirectAttributes rttr){
         service.register(member);
-        if(member.getAttachList() != null){
-            member.getAttachList().forEach(attach -> log.info(attach));
-        }
-        rttr.addFlashAttribute("result", member.getId());
         return "home";
     }
-
     @GetMapping({"/get", "/modify"})
+    @PreAuthorize("isAuthenticated() and ((principal.member.mno == #mno) or hasRole('ROLE_ADMIN'))")
     public void get(@RequestParam("mno") int mno,  @ModelAttribute("cri") Criteria cri, Model model){
         model.addAttribute("member", service.get(mno));
     }
 
     @PostMapping("modify")
+    @PreAuthorize("isAuthenticated() and ((principal.member.mno == #member.mno) or hasRole('ROLE_ADMIN'))")
     public String modify(MemberVO member, RedirectAttributes rttr){
-        if(service.modify(member)){
-            rttr.addAttribute("result","success");
+
+        if(member.getAttachList() != null){
+            member.getAttachList().forEach(attach -> log.info(attach));
         }
+        service.modify(member);
+
         return "home";
     }
 
@@ -82,7 +87,7 @@ public class MemberController {
     };
 
 
-    @RequestMapping(value = "/passwordChange", method = RequestMethod.GET)
+    @GetMapping(value = "/passwordChange")
     public String passwordGetChange(String success){
         if(success == null){
             return "redirect:/";
@@ -96,6 +101,44 @@ public class MemberController {
             rttr.addFlashAttribute("result", "success");
         }
         return "home";
+    }
+
+    @GetMapping("/forgetPassword")
+    public String getForgetPassword(String error,Model model){
+        if(error != null){
+            model.addAttribute("error", "아이디 또는 이메일 주소를 확인바랍니다.");
+        }
+        return "/member/forgetPassword";
+    }
+    
+    @PostMapping(value = "/forgetPassword")
+    public String postForgetPassword(@RequestParam("id") String id, @RequestParam("email") String email, RedirectAttributes rttr){
+        MemberVO memberVO = service.read(id);
+        int password = (int) (Math.random() * 9999) + 1000;
+        memberVO.setPassword(Integer.toString(password));
+        if(!memberVO.getEmail().equals(email)) {
+            return "redirect:/member/forgetPassword?error";
+        }else if(memberVO.getEmail().equals(email)){
+            if (service.passwordChange(memberVO)) {
+                try {
+                    MimeMessage message = mailSender.createMimeMessage();
+                    MimeMessageHelper messageHelper = new MimeMessageHelper(message,true, "UTF-8");
+
+                    messageHelper.setFrom("nbookgo@gmail.com"); // 보내는사람 생략하면 정상작동을 안함
+                    messageHelper.setTo(memberVO.getEmail()); // 받는사람 이메일
+                    messageHelper.setSubject("Hello_world 임시비밀번호입니다."); // 메일제목은 생략이 가능하다
+                    messageHelper.setText("비밀번호는 : " + password); // 메일 내용
+
+                    mailSender.send(message);
+                    log.warn(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                rttr.addFlashAttribute("result", "success");
+            }
+        }
+
+        return "/login";
     }
 
     @PostMapping("/remove")
@@ -121,9 +164,7 @@ public class MemberController {
 
     @RequestMapping(value = "/auth/{mno}/{auth}")
     public String changeRole(@PathVariable int mno, @PathVariable String auth) {
-        log.warn("aaa");
         service.toggleRole(mno, auth);
-        log.warn("ccc");
         return "redirect:/member/list";
     }
 

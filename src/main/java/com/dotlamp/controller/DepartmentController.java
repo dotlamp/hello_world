@@ -34,14 +34,14 @@ public class DepartmentController {
 
     @GetMapping("/list")
     public void list(Criteria cri, Model model) {
-        model.addAttribute("list", service.getList(cri));
+      /*  model.addAttribute("list", service.getList(cri));
 
         int total = service.getTotal(cri); //전체글갯수
         log.info("total : "+total);
-        model.addAttribute("pageMaker", new PageDTO(cri, total));
+        model.addAttribute("pageMaker", new PageDTO(cri, total));*/
     }
 
-    @PreAuthorize("isAuthenticated()")
+/*    @PreAuthorize("isAuthenticated()")*/
     @GetMapping("/register")
     public void register() {
 
@@ -61,14 +61,14 @@ public class DepartmentController {
 
     @GetMapping({"/get", "/modify"})
     public void get(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, Model model) {
-        log.info("get or modify");
+   /*     log.info("get or modify");
         model.addAttribute("board", service.get(bno));
         model.addAttribute("replyList", replyService.getListPage(cri, bno));
 
         int total = replyService.getTotal(cri, bno);
         log.info("total : "+total);
         model.addAttribute("pageMaker", new PageDTO(cri, total));
-
+*/
     }
 
     @PreAuthorize("principal.username == #board.writer")
@@ -90,13 +90,13 @@ public class DepartmentController {
     @PreAuthorize("principal.username == #writer")
     @PostMapping("/remove")
     public String remove(@RequestParam("bno") int bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
-        log.info("remove"+bno);
+        /*log.info("remove"+bno);
 
         List<AttachVO> attachList = service.getAttachList(bno);
         if(service.remove(bno)) {
             deleteFiles(attachList);
             rttr.addFlashAttribute("result", "success");
-        }
+        }*/
 //		rttr.addAttribute("pageNum", cri.getPageNum());
 //		rttr.addAttribute("amount", cri.getAmount());
 //		rttr.addAttribute("type", cri.getType());
