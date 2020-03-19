@@ -28,8 +28,11 @@ public class MemberVO {
     private Date updateDate;
 
     private int dno;
+
     private List<AttachVO> attachList;
     private List<MemberAuthVO> authList;
+
+
 
     public   boolean hasAuth(String role){
         for(MemberAuthVO auth : authList){
